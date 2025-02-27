@@ -1,10 +1,15 @@
 [project]
 name = "pyd2d"
-version = "0.1.0"
+version = "0.1.2"
 description = "A Python wrapper for the Windows Direct2D and DirectWrite APIs"
 readme = "README.md"
 license = { file = "LICENSE.txt" }
 requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/merlinz01/pyd2d"
+Repository = "https://github.com/merlinz01/pyd2d"
+Issues = "https://github.com/merlinz01/pyd2d/issues"
 
 [dependency-groups]
 dev = [
