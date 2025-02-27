@@ -5,6 +5,10 @@ pyD2D is a Python wrapper for the Windows Direct2D and DirectWrite APIs.
 Not all of the Direct2D and DirectWrite APIs are wrapped, but the most commonly used ones are.
 If you need a specific API that is not wrapped, feel free to open an issue or submit a pull request.
 
+Note: At this point pyD2D only provides wheels for Python 3.13 32-bit on Windows,
+due to the headaches of Python packaging for Cython extensions.
+If you need a wheel for a different version of Python, feel free to open an issue.
+
 ## Installation
 
 ```bash
