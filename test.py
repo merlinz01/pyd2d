@@ -418,3 +418,7 @@ class TestTextLayout(PyD2DTest):
         self.assertIsInstance(metrics.layoutHeight, float)
         self.assertIsInstance(metrics.maxBidiReorderingDepth, int)
         self.assertIsInstance(metrics.lineCount, int)
+
+
+if __name__ == "__main__":
+    unittest.main()

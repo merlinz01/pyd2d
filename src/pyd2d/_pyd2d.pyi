@@ -30,13 +30,8 @@ def InitializeCOM(options: int = 0) -> None:
 class COMObject:
     """
     Base class for COM objects.
+    Use the factory functions to create instances of COMObject subclasses.
     """
-    def __init__(self, ptr: int) -> None:
-        """
-        Initializes the COM object with a pointer.
-
-        Use the factory functions to create instances of COMObject subclasses.
-        """
 
 def GetD2DFactory() -> "D2DFactory":
     """

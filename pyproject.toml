@@ -9,27 +9,34 @@ requires-python = ">=3.9"
 [dependency-groups]
 dev = [
     "cython>=3.0.12",
+    "poethepoet>=0.32.2",
     "pytest>=8.3.4",
     "ruff>=0.9.7",
     "setuptools>=75.8.2",
 ]
 
 [build-system]
-requires = ["setuptools", "cython"]
+requires = ["setuptools>=75", "cython>=3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["pyd2d"]
+py-modules = []
 ext-modules = [
-    { name = "pyd2d._pyd2d", sources = ["pyd2d/pyd2d.pyx"], language = "c++", libraries = ["d2d1", "dwrite", "ole32"] }
+    { name = "pyd2d._pyd2d", sources = ["src/pyd2d/pyd2d.pyx"], language = "c++", libraries = ["d2d1", "dwrite", "ole32"] }
 ]
-exclude-package-data = { pyd2d = ["*.pyx", "*.pxi"] }
+exclude-package-data = { pyd2d = ["*.pyx"] }
+
+[tool.setuptools.packages.find]
+where = ["src/"]
 
 [tool.poe.tasks.build]
 cmd = "uv build"
 
 [tool.poe.tasks.format]
-cmd = "ruff format *.py *.pxi *.pyi"
+cmd = "ruff format *.py *.pyi"
+
+[tool.poe.tasks.lint]
+cmd = "ruff check *.py *.pyi"
 
 [tool.poe.tasks.test]
 cmd = "pytest test.py"
