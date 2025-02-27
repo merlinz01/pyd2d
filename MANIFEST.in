@@ -1,0 +1,3 @@
+include pyd2d/*.pyx
+include pyd2d/*.pxd
+include pyd2d/*.pyi
