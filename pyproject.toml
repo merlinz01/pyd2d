@@ -3,7 +3,7 @@ name = "pyd2d"
 version = "0.1.2"
 description = "A Python wrapper for the Windows Direct2D and DirectWrite APIs"
 readme = "README.md"
-license = { file = "LICENSE.txt" }
+license = "MIT"
 requires-python = ">=3.9"
 
 [project.urls]
