@@ -17,6 +17,10 @@ pip install pyd2d
 
 ## Usage
 
+See the [demo app](/demo.py) for a working example app using pyD2D and ctypes.
+
+Basic usage is as below:
+
 ```python
 import pyd2d
 
