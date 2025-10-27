@@ -1,0 +1,41 @@
+name: Test
+
+on: push
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --dev --no-install-project
+      - name: Lint
+        run: .venv/Scripts/poe.exe lint
+
+  build:
+    name: Build
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+        # architecture: ["x86", "x86_64"]
+        architecture: ["x86"]
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: >
+          uv sync --dev --no-install-project
+          --python cpython-${{ matrix.python-version }}-windows-${{ matrix.architecture }}-none
+      - name: Build
+        run: .venv/Scripts/poe.exe build
+      - name: Install the package
+        run: uv pip install .
+      - name: Test
+        run: .venv/Scripts/poe.exe test

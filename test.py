@@ -2,15 +2,32 @@ import unittest
 
 import pyd2d
 import ctypes
+from ctypes import wintypes
 
 user32 = ctypes.windll.user32
+CreateWindowExW = user32.CreateWindowExW
+CreateWindowExW.argtypes = [
+    wintypes.DWORD,
+    wintypes.LPCWSTR,
+    wintypes.LPCWSTR,
+    wintypes.DWORD,
+    ctypes.c_int,
+    ctypes.c_int,
+    ctypes.c_int,
+    ctypes.c_int,
+    wintypes.HWND,
+    wintypes.HMENU,
+    wintypes.HINSTANCE,
+    wintypes.LPVOID,
+]
+CreateWindowExW.restype = wintypes.HWND
 
 
 def create_test_window(
     class_name: str = "BUTTON",
     window_name: str = "Test Window",
 ):
-    hwnd = user32.CreateWindowExW(
+    hwnd = CreateWindowExW(
         0,
         class_name,
         window_name,
