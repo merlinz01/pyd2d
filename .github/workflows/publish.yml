@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-sdist:
-    name: Build Source Distribution
+    name: Build sdist
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,10 +26,10 @@ jobs:
           path: dist/*.tar.gz
 
   build-wheels:
-    name: Build
+    name: Build wheel
     strategy:
       matrix:
-        python-version: ["3.12", "3.13", "3.14"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
         # architecture: ["x86", "x86_64"]
         architecture: ["x86"]
     runs-on: windows-latest
