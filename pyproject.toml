@@ -34,9 +34,6 @@ exclude-package-data = { pyd2d = ["*.pyx"] }
 [tool.setuptools.packages.find]
 where = ["src/"]
 
-[tool.poe.tasks.build]
-cmd = "uv build"
-
 [tool.poe.tasks.format]
 cmd = "ruff format *.py *.pyi"
 

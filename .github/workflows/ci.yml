@@ -34,8 +34,8 @@ jobs:
           uv sync --dev --no-install-project
           --python cpython-${{ matrix.python-version }}-windows-${{ matrix.architecture }}-none
       - name: Build
-        run: .venv/Scripts/poe.exe build
+        run: uv build
       - name: Install the package
         run: uv pip install .
       - name: Test
-        run: .venv/Scripts/poe.exe test
+        run: .venv/Scripts/poe test
