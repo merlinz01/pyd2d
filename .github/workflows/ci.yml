@@ -20,7 +20,8 @@ jobs:
     name: Build & Test
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version:
+          ["3.9", "3.10", "3.11", "3.12", "3.13", "3.13t", "3.14", "3.14t"]
         # architecture: ["x86", "x86_64"]
         architecture: ["x86"]
     runs-on: windows-latest
