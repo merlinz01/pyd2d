@@ -5,6 +5,24 @@ description = "A Python wrapper for the Windows Direct2D and DirectWrite APIs"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: GPU",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: Developers",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Cython",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Free Threading",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+    "Typing :: Typed",
+]
 
 [project.urls]
 Homepage = "https://github.com/merlinz01/pyd2d"
