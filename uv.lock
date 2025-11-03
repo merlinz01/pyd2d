@@ -179,7 +179,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "cython", specifier = ">=3.0.12" },
+    { name = "cython", specifier = ">=3.1.0" },
     { name = "poethepoet", specifier = ">=0.32.2" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "ruff", specifier = ">=0.9.7" },
