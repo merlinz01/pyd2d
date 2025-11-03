@@ -14,7 +14,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev --no-install-project
       - name: Lint
-        run: .venv/Scripts/poe.exe lint
+        run: .venv/Scripts/ruff.exe check
 
   build:
     name: Build & Test
@@ -38,4 +38,4 @@ jobs:
       - name: Install the package
         run: uv pip install .
       - name: Test
-        run: .venv/Scripts/poe test
+        run: .venv/Scripts/pytest.exe test.py
