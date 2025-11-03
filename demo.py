@@ -1,7 +1,8 @@
-import pyd2d
 import ctypes
-from ctypes import wintypes
 import sys
+from ctypes import wintypes
+
+import pyd2d
 
 user32 = ctypes.windll.user32
 kernel32 = ctypes.windll.kernel32

@@ -27,18 +27,21 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 py-modules = []
 ext-modules = [
-    { name = "pyd2d._pyd2d", sources = ["src/pyd2d/pyd2d.pyx"], language = "c++", libraries = ["d2d1", "dwrite", "ole32"] }
+    { name = "pyd2d", sources = ["src/pyd2d.pyx"], language = "c++", libraries = ["d2d1", "dwrite", "ole32"] }
 ]
 exclude-package-data = { pyd2d = ["*.pyx"] }
 
 [tool.setuptools.packages.find]
 where = ["src/"]
 
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "RUF022", "SIM"]
+
 [tool.poe.tasks.format]
-cmd = "ruff format *.py *.pyi"
+cmd = "ruff format"
 
 [tool.poe.tasks.lint]
-cmd = "ruff check *.py *.pyi"
+cmd = "ruff check"
 
 [tool.poe.tasks.test]
 cmd = "pytest test.py"

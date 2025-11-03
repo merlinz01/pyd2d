@@ -1,4 +1,5 @@
 # cython: language_level=3
+# cython: freethreading_compatible=True
 
 include "_pyd2d_const.pyi"
 from libc.stdint cimport int32_t, uint32_t, uint64_t, intptr_t
@@ -44,7 +45,7 @@ cdef extern from "objbase.h":
     HRESULT CoInitializeEx(
         void* pvReserved,
         unsigned long dwCoInit)
-    
+
     cdef cppclass IUnknown:
         void Release()
 
@@ -56,7 +57,7 @@ cdef extern from "dwrite.h":
     ctypedef int DWRITE_FONT_STYLE
     ctypedef int DWRITE_FONT_WEIGHT
     ctypedef int DWRITE_FONT_STRETCH
-    
+
     ctypedef struct DWRITE_TEXT_METRICS:
         FLOAT  left
         FLOAT  top
@@ -118,7 +119,7 @@ cdef extern from "d2d1.h":
     ctypedef int DWRITE_MEASURING_MODE
     ctypedef int D2D1_FIGURE_BEGIN
     ctypedef int D2D1_FIGURE_END
-    
+
     ctypedef struct D2D1_FACTORY_OPTIONS:
         D2D1_DEBUG_LEVEL debugLevel
     ctypedef struct D2D1_PIXEL_FORMAT:

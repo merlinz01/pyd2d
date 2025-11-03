@@ -1,8 +1,8 @@
+import ctypes
 import unittest
+from ctypes import wintypes
 
 import pyd2d
-import ctypes
-from ctypes import wintypes
 
 user32 = ctypes.windll.user32
 CreateWindowExW = user32.CreateWindowExW

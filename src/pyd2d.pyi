@@ -1,3 +1,4 @@
+# This file is a type stub for the native _pyd2d extension module.
 """
 pyd2d - A Python wrapper for the Windows Direct2D and DirectWrite APIs.
 
@@ -7,7 +8,147 @@ which are part of the Windows API.
 
 from typing import Optional, Tuple
 
-from _pyd2d_const import *  # noqa: F403
+from _pyd2d_const import (
+    ALPHA_MAX,
+    ALPHA_MODE,
+    ANTIALIAS_MODE,
+    ARC_SIZE,
+    BITMAP_INTERPOLATION_MODE,
+    BREAK_CONDITION,
+    CAP_STYLE,
+    COMBINE_MODE,
+    COMPATIBLE_RENDER_TARGET_OPTIONS,
+    D2D_FACTORY_TYPE,
+    DASH_STYLE,
+    DC_INITIALIZE_MODE,
+    DEBUG_LEVEL,
+    DRAW_TEXT_OPTIONS,
+    DWRITE_FACTORY_TYPE,
+    DXGI_FORMAT,
+    EXTEND_MODE,
+    FEATURE_LEVEL,
+    FIGURE_BEGIN,
+    FILL_MODE,
+    FLOW_DIRECTION,
+    FONT_FACE_TYPE,
+    FONT_FEATURE_TAG,
+    FONT_FILE_TYPE,
+    FONT_SIMULATIONS,
+    FONT_STRETCH,
+    FONT_STYLE,
+    FONT_WEIGHT,
+    GAMMA,
+    GEOMETRY_RELATION,
+    GEOMETRY_SIMPLIFICATION_OPTION,
+    INFORMATIONAL_STRING_ID,
+    INTERPOLATION_MODE_DEFINITION,
+    LAYER_OPTIONS,
+    LINE_JOIN,
+    LINE_SPACING_METHOD,
+    MEASURING_MODE,
+    NUMBER_SUBSTITUTION_METHOD,
+    OPACITY_MASK_CONTENT,
+    PARAGRAPH_ALIGNMENT,
+    PATH_SEGMENT,
+    PIXEL_GEOMETRY,
+    PRESENT_OPTIONS,
+    READING_DIRECTION,
+    RENDER_TARGET_TYPE,
+    RENDER_TARGET_USAGE,
+    RENDERING_MODE,
+    SCRIPT_SHAPES,
+    SWEEP_DIRECTION,
+    TEXT_ALIGNMENT,
+    TEXT_ANTIALIAS_MODE,
+    TEXTURE_TYPE,
+    TRIMMING_GRANULARITY,
+    WINDOW_STATE,
+    WORD_WRAPPING,
+)
+
+__all__ = [
+    "ALPHA_MAX",
+    "ALPHA_MODE",
+    "ANTIALIAS_MODE",
+    "ARC_SIZE",
+    "BITMAP_INTERPOLATION_MODE",
+    "BREAK_CONDITION",
+    "CAP_STYLE",
+    "COMBINE_MODE",
+    "COMPATIBLE_RENDER_TARGET_OPTIONS",
+    "D2D_FACTORY_TYPE",
+    "DASH_STYLE",
+    "DC_INITIALIZE_MODE",
+    "DEBUG_LEVEL",
+    "DRAW_TEXT_OPTIONS",
+    "DWRITE_FACTORY_TYPE",
+    "DXGI_FORMAT",
+    "EXTEND_MODE",
+    "FEATURE_LEVEL",
+    "FIGURE_BEGIN",
+    "FILL_MODE",
+    "FLOW_DIRECTION",
+    "FONT_FACE_TYPE",
+    "FONT_FEATURE_TAG",
+    "FONT_FILE_TYPE",
+    "FONT_SIMULATIONS",
+    "FONT_STRETCH",
+    "FONT_STYLE",
+    "FONT_WEIGHT",
+    "GAMMA",
+    "GEOMETRY_RELATION",
+    "GEOMETRY_SIMPLIFICATION_OPTION",
+    "INFORMATIONAL_STRING_ID",
+    "INTERPOLATION_MODE_DEFINITION",
+    "LAYER_OPTIONS",
+    "LINE_JOIN",
+    "LINE_SPACING_METHOD",
+    "MEASURING_MODE",
+    "NUMBER_SUBSTITUTION_METHOD",
+    "OPACITY_MASK_CONTENT",
+    "PARAGRAPH_ALIGNMENT",
+    "PATH_SEGMENT",
+    "PIXEL_GEOMETRY",
+    "PRESENT_OPTIONS",
+    "READING_DIRECTION",
+    "RENDERING_MODE",
+    "RENDER_TARGET_TYPE",
+    "RENDER_TARGET_USAGE",
+    "SCRIPT_SHAPES",
+    "SWEEP_DIRECTION",
+    "TEXTURE_TYPE",
+    "TEXT_ALIGNMENT",
+    "TEXT_ANTIALIAS_MODE",
+    "TEXT_METRICS",
+    "TRIMMING_GRANULARITY",
+    "WINDOW_STATE",
+    "WORD_WRAPPING",
+    "Bitmap",
+    "Brush",
+    "COMError",
+    "COMObject",
+    "D2DFactory",
+    "DWriteFactory",
+    "DWriteFactory",
+    "Direct2DError",
+    "DirectWriteError",
+    "FontFace",
+    "Geometry",
+    "GeometrySink",
+    "GetD2DFactory",
+    "GetDWriteFactory",
+    "HWNDRenderTarget",
+    "Image",
+    "InitializeCOM",
+    "PathGeometry",
+    "RenderTarget",
+    "Resource",
+    "SimplifiedGeometrySink",
+    "SolidColorBrush",
+    "StrokeStyle",
+    "TextFormat",
+    "TextLayout",
+]
 
 class COMError(OSError):
     """
@@ -90,7 +231,8 @@ class RenderTarget(Resource):
     """
     Base class representing an object that can receive drawing commands.
 
-    Classes that inherit from RenderTarget render the drawing commands they receive in different ways.
+    Classes that inherit from RenderTarget render the drawing commands they receive
+    in different ways.
     """
     def BeginDraw(self) -> None:
         """
@@ -118,7 +260,8 @@ class RenderTarget(Resource):
         srcRect: Optional[Tuple[float, float, float, float]] = None,
     ) -> None:
         """
-        Draws the specified bitmap after scaling it to the size of the specified rectangle.
+        Draws the specified bitmap after scaling it to the size of the specified
+        rectangle.
         """
     def DrawEllipse(
         self,
@@ -167,7 +310,8 @@ class RenderTarget(Resource):
         strokeStyle: Optional["StrokeStyle"] = None,
     ) -> None:
         """
-        Draws the outline of a rectangle that has the specified dimensions and stroke style.
+        Draws the outline of a rectangle that has the specified dimensions and stroke
+        style.
         """
     def DrawText(
         self,
@@ -182,7 +326,8 @@ class RenderTarget(Resource):
         measuringMode: int = 0,
     ) -> None:
         """
-        Draws the specified text using the format information provided by a TextFormat object.
+        Draws the specified text using the format information provided by a TextFormat
+        object.
         """
     def DrawTextLayout(
         self,
@@ -197,7 +342,8 @@ class RenderTarget(Resource):
         """
     def EndDraw(self) -> None:
         """
-        Ends drawing operations on the render target and indicates the current error state and associated tags.
+        Ends drawing operations on the render target and indicates the current error
+        state and associated tags.
         """
     def FillEllipse(
         self, cx: float, cy: float, rx: float, ry: float, brush: "Brush"
@@ -286,7 +432,8 @@ class PathGeometry(Geometry):
     """
     def Open(self) -> "GeometrySink":
         """
-        Retrieves the GeometrySink that is used to populate the path geometry with figures and segments.
+        Retrieves the GeometrySink that is used to populate the path geometry with
+        figures and segments.
         """
 
 class SimplifiedGeometrySink(COMObject):
@@ -299,7 +446,8 @@ class SimplifiedGeometrySink(COMObject):
         """
     def Close(self) -> None:
         """
-        Closes the geometry sink, indicates whether it is in an error state, and resets the sink's error state.
+        Closes the geometry sink, indicates whether it is in an error state, and resets
+        the sink's error state.
         """
     def EndFigure(self, figureEnd: int = 0) -> None:
         """
@@ -333,7 +481,8 @@ class GeometrySink(SimplifiedGeometrySink):
         self, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float
     ) -> None:
         """
-        Creates a cubic Bezier curve between the current point and the specified end point.
+        Creates a cubic Bezier curve between the current point and the specified end
+        point.
         """
     def AddLine(self, x: float, y: float) -> None:
         """
@@ -342,7 +491,8 @@ class GeometrySink(SimplifiedGeometrySink):
         """
     def AddQuadraticBezier(self, x1: float, y1: float, x2: float, y2: float) -> None:
         """
-        Creates a quadratic Bezier curve between the current point and the specified end point.
+        Creates a quadratic Bezier curve between the current point and the specified end
+        point.
         """
 
 class Image(Resource):
