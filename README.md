@@ -2,11 +2,12 @@
 
 pyD2D is a Python wrapper for the Windows Direct2D and DirectWrite APIs.
 
-> Note: Not all of the Direct2D and DirectWrite APIs are wrapped, but the most commonly used ones are.
-If you need a specific API that is not wrapped, feel free to open an issue or submit a pull request.
+> Note: Not all of the Direct2D and DirectWrite APIs are wrapped, but the most
+> commonly used ones are. If you need a specific API that is not wrapped, feel
+> free to open an issue or submit a pull request.
 
 > Note: This project may not have prebuilt wheels for your Python version.
-If you need a wheel that's missing, please open an issue.
+> If you need a wheel that's missing, please open an issue.
 
 ## Installation
 
@@ -37,8 +38,16 @@ render_target = factory.CreateHwndRenderTarget(
 # Draw a rectangle
 render_target.BeginDraw()
 render_target.Clear(1.0, 1.0, 1.0, 1.0)
-render_target.FillRectangle(100, 100, 200, 200, render_target.CreateSolidColorBrush(0.0, 0.0, 0.0, 1.0))
+render_target.FillRectangle(
+    100, 100, 200, 200,
+    render_target.CreateSolidColorBrush(0.0, 0.0, 0.0, 1.0),
+)
 render_target.EndDraw()
+
+# Release resources
+render_target.Release()
+factory.Release()
+pyd2d.UninitializeCOM()
 ```
 
 ## License
