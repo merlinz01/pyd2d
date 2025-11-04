@@ -4,6 +4,7 @@ import math
 import random
 import sys
 import time
+import traceback
 from ctypes import wintypes
 
 import pyd2d
@@ -407,6 +408,15 @@ def get_mouse_pos(lparam):
 
 @WNDPROC
 def wnd_proc(hwnd, msg, wparam, lparam):
+    try:
+        return wnd_proc_inner(hwnd, msg, wparam, lparam)
+    except BaseException:
+        traceback.print_exc()
+        user32.PostQuitMessage(1)
+        return 0
+
+
+def wnd_proc_inner(hwnd, msg, wparam, lparam):
     if msg == WM_CREATE:
         win = PyD2DDemoWindow(hwnd)
         hwnd2win[hwnd] = win
