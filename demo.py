@@ -11,15 +11,19 @@ import pyd2d
 user32 = ctypes.windll.user32
 kernel32 = ctypes.windll.kernel32
 
-WNDPROCTYPE = ctypes.WINFUNCTYPE(
-    wintypes.LPARAM, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM
+HCURSOR = wintypes.HANDLE
+LRESULT = wintypes.LPARAM
+UINT_PTR = wintypes.WPARAM
+
+WNDPROC = ctypes.WINFUNCTYPE(
+    LRESULT, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM
 )
 
 
 class WNDCLASSW(ctypes.Structure):
     _fields_ = [
         ("style", wintypes.UINT),
-        ("lpfnWndProc", WNDPROCTYPE),
+        ("lpfnWndProc", WNDPROC),
         ("cbClsExtra", ctypes.c_int),
         ("cbWndExtra", ctypes.c_int),
         ("hInstance", wintypes.HINSTANCE),
@@ -60,7 +64,105 @@ class MSG(ctypes.Structure):
     ]
 
 
+user32.BeginPaint.restype = wintypes.HDC
+user32.BeginPaint.argtypes = [wintypes.HWND, ctypes.POINTER(PAINTSTRUCT)]
+
+user32.CreateWindowExW.restype = wintypes.HWND
+user32.CreateWindowExW.argtypes = [
+    wintypes.DWORD,
+    wintypes.LPCWSTR,
+    wintypes.LPCWSTR,
+    wintypes.DWORD,
+    ctypes.c_int,
+    ctypes.c_int,
+    ctypes.c_int,
+    ctypes.c_int,
+    wintypes.HWND,
+    wintypes.HMENU,
+    wintypes.HINSTANCE,
+    wintypes.LPVOID,
+]
+
+user32.DefWindowProcW.restype = LRESULT
+user32.DefWindowProcW.argtypes = [
+    wintypes.HWND,
+    wintypes.UINT,
+    wintypes.WPARAM,
+    wintypes.LPARAM,
+]
+
+user32.DispatchMessageW.restype = LRESULT
+user32.DispatchMessageW.argtypes = [ctypes.POINTER(MSG)]
+
+user32.EndPaint.restype = wintypes.BOOL
+user32.EndPaint.argtypes = [wintypes.HWND, ctypes.POINTER(PAINTSTRUCT)]
+
+user32.GetClientRect.restype = wintypes.BOOL
+user32.GetClientRect.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.RECT)]
+
+user32.GetMessageW.restype = wintypes.BOOL
+user32.GetMessageW.argtypes = [
+    ctypes.POINTER(MSG),
+    wintypes.HWND,
+    wintypes.UINT,
+    wintypes.UINT,
+]
+
+kernel32.GetModuleHandleW.restype = wintypes.HMODULE
+kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
+
+user32.InvalidateRect.restype = wintypes.BOOL
+user32.InvalidateRect.argtypes = [
+    wintypes.HWND,
+    ctypes.POINTER(wintypes.RECT),
+    wintypes.BOOL,
+]
+
+user32.KillTimer.restype = wintypes.BOOL
+user32.KillTimer.argtypes = [wintypes.HWND, UINT_PTR]
+
+user32.LoadCursorW.restype = HCURSOR
+user32.LoadCursorW.argtypes = [wintypes.HINSTANCE, wintypes.LPCWSTR]
+
+user32.PostQuitMessage.restype = None
+user32.PostQuitMessage.argtypes = [wintypes.INT]
+
+user32.RegisterClassW.restype = wintypes.ATOM
+user32.RegisterClassW.argtypes = [ctypes.POINTER(WNDCLASSW)]
+
+user32.ReleaseCapture.restype = wintypes.BOOL
+user32.ReleaseCapture.argtypes = []
+
+user32.SetCapture.restype = wintypes.HANDLE
+user32.SetCapture.argtypes = [wintypes.HWND]
+
+user32.SetCursor.restype = HCURSOR
+user32.SetCursor.argtypes = [HCURSOR]
+
+user32.SetTimer.restype = UINT_PTR
+user32.SetTimer.argtypes = [
+    wintypes.HWND,
+    UINT_PTR,
+    wintypes.UINT,
+    wintypes.LPVOID,
+]
+
+user32.ShowWindow.restype = wintypes.BOOL
+user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
+
+user32.TranslateMessage.restype = wintypes.BOOL
+user32.TranslateMessage.argtypes = [ctypes.POINTER(MSG)]
+
+user32.UnregisterClassW.restype = wintypes.BOOL
+user32.UnregisterClassW.argtypes = [wintypes.LPCWSTR, wintypes.HINSTANCE]
+
+user32.UpdateWindow.restype = wintypes.BOOL
+user32.UpdateWindow.argtypes = [wintypes.HWND]
+
+
 CW_USEDEFAULT = 0x80000000
+
+IDC_ARROW = 32512
 
 SW_SHOWDEFAULT = 10
 
@@ -75,17 +177,24 @@ WM_LBUTTONUP = 0x0202
 
 WS_OVERLAPPEDWINDOW = 0x00CF0000
 
+
+def check(v):
+    if not v:
+        raise OSError(ctypes.FormatError())
+    return v
+
+
 hwnd2win = {}
 
 
 class PyD2DDemoWindow:
     def __init__(self, hwnd):
         self.hwnd = hwnd
-        self.cursor = user32.LoadCursorW(None, ctypes.c_wchar_p(0x7F00))  # IDC_ARROW
+        self.cursor = check(user32.LoadCursorW(None, ctypes.c_wchar_p(IDC_ARROW)))
         pyd2d.InitializeCOM()
         factory = pyd2d.GetD2DFactory()
         rect = wintypes.RECT()
-        user32.GetClientRect(self.hwnd, ctypes.byref(rect))
+        check(user32.GetClientRect(self.hwnd, ctypes.byref(rect)))
         self.width = rect.right - rect.left
         self.height = rect.bottom - rect.top
         self.render_target = factory.CreateHwndRenderTarget(
@@ -94,8 +203,7 @@ class PyD2DDemoWindow:
         factory.Release()
         self.line_brush = self.render_target.CreateSolidColorBrush(1.0, 0.5, 0.5)
         self.text_brush = self.render_target.CreateSolidColorBrush(1.0, 1.0, 1.0, 0.5)
-        if not user32.SetTimer(self.hwnd, 123, 10, None):
-            raise OSError(ctypes.FormatError())
+        check(user32.SetTimer(self.hwnd, 123, 10, None))
         dwritefactory = pyd2d.GetDWriteFactory()
         self.text_format = dwritefactory.CreateTextFormat("Segoe UI", 12)
         dwritefactory.Release()
@@ -103,8 +211,8 @@ class PyD2DDemoWindow:
         self.balls = []  # type: list[Ball]
         for _ in range(10):
             ball = Ball(
-                random.randint(0, self.width),
-                random.randint(0, self.height),
+                self.width / 2,
+                self.height - 50,
                 self.width,
                 self.height,
                 self.render_target.CreateSolidColorBrush(
@@ -112,11 +220,11 @@ class PyD2DDemoWindow:
                 ),
             )
             ball.dx = random.randint(-100, 100)
-            ball.dy = random.randint(-200, 0)
+            ball.dy = random.randint(-300, -100)
             self.balls.append(ball)
 
     def destroy(self):
-        user32.KillTimer(self.hwnd, 123)
+        check(user32.KillTimer(self.hwnd, 123))
         for ball in self.balls:
             ball.brush.Release()
         self.text_brush.Release()
@@ -126,7 +234,7 @@ class PyD2DDemoWindow:
 
     def resize(self):
         rect = wintypes.RECT()
-        user32.GetClientRect(self.hwnd, ctypes.byref(rect))
+        check(user32.GetClientRect(self.hwnd, ctypes.byref(rect)))
         self.width = rect.right - rect.left
         self.height = rect.bottom - rect.top
         self.render_target.Resize(self.width, self.height)
@@ -176,7 +284,7 @@ class PyD2DDemoWindow:
         if self.mouse_is_down:
             self.balls[-1].x = x
             self.balls[-1].y = y
-            user32.InvalidateRect(self.hwnd, None, True)
+            check(user32.InvalidateRect(self.hwnd, None, False))
 
     def mouse_down(self, x, y):
         ball = Ball(
@@ -191,7 +299,7 @@ class PyD2DDemoWindow:
         self.balls.append(ball)
         self.mouse_is_down = True
         user32.SetCapture(self.hwnd)
-        user32.InvalidateRect(self.hwnd, None, True)
+        check(user32.InvalidateRect(self.hwnd, None, False))
 
     def mouse_up(self, x, y):
         if self.mouse_is_down:
@@ -200,8 +308,8 @@ class PyD2DDemoWindow:
             self.balls[-1].dx = x - self.balls[-1].sx
             self.balls[-1].dy = y - self.balls[-1].sy
         self.mouse_is_down = False
-        user32.ReleaseCapture()
-        user32.InvalidateRect(self.hwnd, None, True)
+        check(user32.ReleaseCapture())
+        check(user32.InvalidateRect(self.hwnd, None, False))
 
     def timer(self):
         for i, ball in enumerate(self.balls):
@@ -235,11 +343,17 @@ class PyD2DDemoWindow:
         now = time.time()
         for ball in list(self.balls):
             if ball.stopped_since and now - ball.stopped_since > 10:
+                ball.brush.Release()
                 self.balls.remove(ball)
-        user32.InvalidateRect(self.hwnd, None, True)
+        check(user32.InvalidateRect(self.hwnd, None, False))
 
 
 class Ball:
+    speed_factor = 0.1
+    gravity_factor = 2
+    floor_air_resistance_factor = 2
+    air_resistance_factor = 0.005
+
     def __init__(self, x, y, w, h, brush):
         self.sx = self.x = x
         self.sy = self.y = y
@@ -250,22 +364,33 @@ class Ball:
         self.stopped_since = None  # type: float | None
 
     def timer(self):
-        self.x += self.dx / 10
-        self.y += self.dy / 10
-        self.dy += 1
-        self.dy -= self.dy / 100
-        self.dx -= self.dx / 200
+        # Move along current trajectory
+        self.x += self.dx * self.speed_factor
+        self.y += self.dy * self.speed_factor
+        # Pull of gravity
+        self.dy += self.gravity_factor
+        # Air resistance at floor
+        self.dy -= self.floor_air_resistance_factor / max(self.height - self.y - 50, 1)
+        # Air resistance
+        self.dy -= self.dy * self.air_resistance_factor
+        self.dx -= self.dx * self.air_resistance_factor
         if abs(self.dx) < 1:
+            # Eventually stop
             self.dx = 0
         elif self.x < 10 or self.x > self.width - 10:
+            # Bounce off side walls
             self.dx = -self.dx
+        # Keep within side walls
         self.x = min(max(self.x, 10), self.width - 5)
-        if self.y > self.height - 60 and abs(self.dy) < 20:
+        if self.y > self.height - 51 and abs(self.dy) < 5:
+            # Eventually stop
             self.dy = 0
             self.y = self.height - 50
         elif self.y < 10 or self.y > self.height - 50:
+            # Keep within floor and ceiling
             self.dy = -self.dy
             self.y = min(max(self.y, 10), self.height - 50)
+        # Keep track of when stopped
         if self.dx == 0 and self.dy == 0 and not self.stopped_since:
             self.stopped_since = time.time()
 
@@ -280,24 +405,26 @@ def get_mouse_pos(lparam):
     return x, y
 
 
-@WNDPROCTYPE
+@WNDPROC
 def wnd_proc(hwnd, msg, wparam, lparam):
     if msg == WM_CREATE:
         win = PyD2DDemoWindow(hwnd)
         hwnd2win[hwnd] = win
         return 0
-    if msg == WM_DESTROY:
-        user32.PostQuitMessage(0)
-        return 0
     win = hwnd2win.get(hwnd)
     if not win:
         return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
+    if msg == WM_DESTROY:
+        user32.PostQuitMessage(0)
+        win.destroy()
+        hwnd2win.pop(hwnd, None)
+        return 0
     if msg == WM_SIZE:
         win.resize()
         return 0
     if msg == WM_PAINT:
         ps = PAINTSTRUCT()
-        user32.BeginPaint(hwnd, ctypes.byref(ps))
+        check(user32.BeginPaint(hwnd, ctypes.byref(ps)))
         win.paint()
         user32.EndPaint(hwnd, ctypes.byref(ps))
         return 0
@@ -313,9 +440,6 @@ def wnd_proc(hwnd, msg, wparam, lparam):
     if msg == WM_TIMER:
         win.timer()
         return 0
-    if msg == WM_DESTROY:
-        win.destroy()
-        hwnd2win.pop(hwnd, None)
     return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
 
 
@@ -327,38 +451,34 @@ def main():
     wndclass.lpfnWndProc = wnd_proc
     wndclass.cbClsExtra = 0
     wndclass.cbWndExtra = 0
-    wndclass.hInstance = kernel32.GetModuleHandleW(None)
+    wndclass.hInstance = check(kernel32.GetModuleHandleW(None))
     wndclass.hIcon = None
     wndclass.hCursor = None
     wndclass.hbrBackground = None
     wndclass.lpszMenuName = None
     wndclass.lpszClassName = class_name
 
-    atom = user32.RegisterClassW(ctypes.byref(wndclass))
-    if not atom:
-        print("Failed to register window class:", ctypes.FormatError())
-        return 1
+    check(user32.RegisterClassW(ctypes.byref(wndclass)))
 
-    hwnd = user32.CreateWindowExW(
-        0,
-        class_name,
-        "PyD2D Demo Window",
-        WS_OVERLAPPEDWINDOW,
-        ctypes.c_int(CW_USEDEFAULT),
-        ctypes.c_int(CW_USEDEFAULT),
-        800,
-        600,
-        None,
-        None,
-        wndclass.hInstance,
-        None,
+    hwnd = check(
+        user32.CreateWindowExW(
+            0,
+            class_name,
+            "PyD2D Demo Window",
+            WS_OVERLAPPEDWINDOW,
+            ctypes.c_int(CW_USEDEFAULT),
+            ctypes.c_int(CW_USEDEFAULT),
+            800,
+            600,
+            None,
+            None,
+            wndclass.hInstance,
+            None,
+        )
     )
-    if not hwnd:
-        print("Failed to create window:", ctypes.FormatError())
-        return 1
 
     user32.ShowWindow(hwnd, SW_SHOWDEFAULT)
-    user32.UpdateWindow(hwnd)
+    check(user32.UpdateWindow(hwnd))
 
     msg = MSG()
     while True:
@@ -371,6 +491,8 @@ def main():
         else:
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageW(ctypes.byref(msg))
+
+    check(user32.UnregisterClassW(class_name, wndclass.hInstance))
 
     return msg.wParam
 
