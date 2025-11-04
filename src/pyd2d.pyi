@@ -184,6 +184,7 @@ class COMObject:
     def Release(self) -> None:
         """
         Releases the COM object. The object can no longer be used after this call.
+        Objects are automatically released when they are garbage collected.
         """
 
 def GetD2DFactory() -> "D2DFactory":
