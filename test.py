@@ -53,6 +53,10 @@ class PyD2DTest(unittest.TestCase):
     def setUpClass(cls):
         pyd2d.InitializeCOM()
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        pyd2d.UninitializeCOM()
+
 
 class TestD2DFactory(PyD2DTest):
     def test_get_d2d_factory(self):
