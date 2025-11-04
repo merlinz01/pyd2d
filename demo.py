@@ -115,6 +115,7 @@ class PyD2DDemoWindow:
 
     def destroy(self):
         user32.KillTimer(self.hwnd, 123)
+        pyd2d.UninitializeCOM()
 
     def resize(self):
         rect = wintypes.RECT()

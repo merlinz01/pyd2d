@@ -45,6 +45,7 @@ cdef extern from "objbase.h":
     HRESULT CoInitializeEx(
         void* pvReserved,
         unsigned long dwCoInit) noexcept nogil
+    void CoUninitialize() noexcept nogil
 
     cdef cppclass IUnknown:
         void Release() noexcept nogil
@@ -339,6 +340,8 @@ def InitializeCOM(options=0):
     elif FAILED(hr):
         raise COMError(hr)
 
+def UninitializeCOM():
+    CoUninitialize()
 
 cdef class COMObject:
     cdef void* ptr

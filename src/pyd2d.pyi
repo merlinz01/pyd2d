@@ -170,6 +170,11 @@ def InitializeCOM(options: int = 0) -> None:
     Initializes COM for the current thread by calling CoInitializeEx.
     """
 
+def UninitializeCOM() -> None:
+    """
+    Uninitializes COM for the current thread by calling CoUninitialize.
+    """
+
 class COMObject:
     """
     Base class for COM objects.
