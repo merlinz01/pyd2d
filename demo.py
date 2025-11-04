@@ -29,7 +29,7 @@ class WNDCLASSW(ctypes.Structure):
         ("cbWndExtra", ctypes.c_int),
         ("hInstance", wintypes.HINSTANCE),
         ("hIcon", wintypes.HICON),
-        ("hCursor", wintypes.HANDLE),
+        ("hCursor", HCURSOR),
         ("hbrBackground", wintypes.HBRUSH),
         ("lpszMenuName", wintypes.LPCWSTR),
         ("lpszClassName", wintypes.LPCWSTR),
@@ -62,6 +62,7 @@ class MSG(ctypes.Structure):
         ("lParam", wintypes.LPARAM),
         ("time", wintypes.DWORD),
         ("pt", POINT),
+        ("lPrivate", wintypes.DWORD),
     ]
 
 
@@ -164,6 +165,7 @@ user32.UpdateWindow.argtypes = [wintypes.HWND]
 CW_USEDEFAULT = 0x80000000
 
 IDC_ARROW = 32512
+IDC_HAND = 32649
 
 SW_SHOWDEFAULT = 10
 
@@ -191,7 +193,8 @@ hwnd2win = {}
 class PyD2DDemoWindow:
     def __init__(self, hwnd):
         self.hwnd = hwnd
-        self.cursor = check(user32.LoadCursorW(None, ctypes.c_wchar_p(IDC_ARROW)))
+        self.cursor_arrow = check(user32.LoadCursorW(None, ctypes.c_wchar_p(IDC_ARROW)))
+        self.cursor_hand = check(user32.LoadCursorW(None, ctypes.c_wchar_p(IDC_HAND)))
         pyd2d.InitializeCOM()
         factory = pyd2d.GetD2DFactory()
         rect = wintypes.RECT()
@@ -281,11 +284,13 @@ class PyD2DDemoWindow:
         rt.EndDraw()
 
     def mouse_move(self, x, y):
-        user32.SetCursor(self.cursor)
         if self.mouse_is_down:
             self.balls[-1].x = x
             self.balls[-1].y = y
             check(user32.InvalidateRect(self.hwnd, None, False))
+            user32.SetCursor(self.cursor_hand)
+        else:
+            user32.SetCursor(self.cursor_arrow)
 
     def mouse_down(self, x, y):
         ball = Ball(
@@ -301,6 +306,7 @@ class PyD2DDemoWindow:
         self.mouse_is_down = True
         user32.SetCapture(self.hwnd)
         check(user32.InvalidateRect(self.hwnd, None, False))
+        user32.SetCursor(self.cursor_hand)
 
     def mouse_up(self, x, y):
         if self.mouse_is_down:
@@ -311,6 +317,7 @@ class PyD2DDemoWindow:
         self.mouse_is_down = False
         check(user32.ReleaseCapture())
         check(user32.InvalidateRect(self.hwnd, None, False))
+        user32.SetCursor(self.cursor_arrow)
 
     def timer(self):
         for i, ball in enumerate(self.balls):
