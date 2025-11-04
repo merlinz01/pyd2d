@@ -305,19 +305,19 @@ cdef extern from "d2d1.h":
         void **ppIFactory)
 
 
-cdef getHRESULTstring(int i):
+cdef getHRESULTstring(int hr):
     cdef int strBufLen = 0x1000
     cdef wchar_t[0x1000] strBuf
     cdef unsigned int ncopied = FormatMessageW(
         0x1200,
         NULL,
-        i,
+        hr,
         0,
         strBuf,
         strBufLen,
         NULL)
     if ncopied == 0:
-        return 'unknown error 0x%08x' % i
+        return 'unknown error %08x' % hr
     return PyUnicode_FromWideChar(strBuf, ncopied).rstrip("\r\n")
 
 
