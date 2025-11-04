@@ -346,19 +346,16 @@ def UninitializeCOM():
 cdef class COMObject:
     cdef void* ptr
 
-    def __init__(self, int ptr):
-        self.ptr = <void*><intptr_t>ptr
+    def __init__(self):
+        raise TypeError("This class cannot be instantiated directly.")
 
-    def Release(self):
+    cpdef Release(self):
         if self.ptr is not NULL:
             (<IUnknown*>self.ptr).Release()
             self.ptr = NULL
 
-    def __del__(self):
-        try:
-            self.Release()
-        except AttributeError:
-            pass
+    def __dealloc__(self):
+        self.Release()
 
 
 _d2d_factory = None
@@ -379,7 +376,7 @@ cdef class D2DFactory(COMObject):
         res = D2D1CreateFactory(<D2D1_FACTORY_TYPE>factoryType, IID_ID2D1Factory, &options, <void**>&factory)
         if FAILED(res):
             raise Direct2DError(res)
-        COMObject.__init__(self, <int><intptr_t>factory)
+        self.ptr = <void*>factory
 
     def CreateHwndRenderTarget(
             self,
@@ -408,17 +405,21 @@ cdef class D2DFactory(COMObject):
         hrtp.pixelSize.height = height
         hrtp.presentOptions = <D2D1_PRESENT_OPTIONS>presentOptions
         cdef ID2D1HwndRenderTarget* target
-        res = (<ID2D1Factory*>self.ptr).CreateHwndRenderTarget(&rtp, &hrtp, <ID2D1HwndRenderTarget**>(&target))
+        res = (<ID2D1Factory*>self.ptr).CreateHwndRenderTarget(&rtp, &hrtp, <ID2D1HwndRenderTarget**>&target)
         if FAILED(res):
             raise Direct2DError(res)
-        return HWNDRenderTarget(<int><intptr_t>target)
+        cdef HWNDRenderTarget obj = HWNDRenderTarget.__new__(HWNDRenderTarget)
+        obj.ptr = <void*>target
+        return obj
 
     def CreatePathGeometry(self):
         cdef ID2D1PathGeometry* pgm
         res = (<ID2D1Factory*>self.ptr).CreatePathGeometry(<ID2D1PathGeometry**>&pgm)
         if FAILED(res):
             raise Direct2DError(res)
-        return PathGeometry(<int><intptr_t>pgm)
+        cdef PathGeometry obj = PathGeometry.__new__(PathGeometry)
+        obj.ptr = <void*>pgm
+        return obj
 
     def CreateStrokeStyle(
             self,
@@ -441,7 +442,9 @@ cdef class D2DFactory(COMObject):
         res = (<ID2D1Factory*>self.ptr).CreateStrokeStyle(&ssp, NULL, 0, <ID2D1StrokeStyle**>&sstyle)
         if FAILED(res):
             raise Direct2DError(res)
-        return StrokeStyle(<int><intptr_t>sstyle)
+        cdef StrokeStyle obj = StrokeStyle.__new__(StrokeStyle)
+        obj.ptr = <void*>sstyle
+        return obj
 
 
 cdef class Resource(COMObject):
@@ -473,7 +476,9 @@ cdef class RenderTarget(Resource):
     #         &bitmap)
     #     if FAILED(res):
     #         raise Direct2DError(res)
-    #     return Bitmap(<int>bitmap)
+    #     cdef Bitmap obj = Bitmap.__new__(Bitmap)
+    #     obj.ptr = <void*>bitmap
+    #     return obj
 
     def CreateSolidColorBrush(self, float r, float g, float b, float a=1.0, float opacity=1.0):
         cdef D2D1_COLOR_F color
@@ -487,7 +492,9 @@ cdef class RenderTarget(Resource):
         res = (<ID2D1RenderTarget*>self.ptr).CreateSolidColorBrush(&color, &bprop, &brush)
         if FAILED(res):
             raise Direct2DError(res)
-        return SolidColorBrush(<int><intptr_t>brush)
+        cdef SolidColorBrush obj = SolidColorBrush.__new__(SolidColorBrush)
+        obj.ptr = <void*>brush
+        return obj
 
     def DrawBitmap(
             self,
@@ -716,7 +723,9 @@ cdef class PathGeometry(Geometry):
         res = (<ID2D1PathGeometry*>self.ptr).Open(&gs)
         if FAILED(res):
             raise Direct2DError(res)
-        return GeometrySink(<int><intptr_t>gs)
+        cdef GeometrySink obj = GeometrySink.__new__(GeometrySink)
+        obj.ptr = <void*>gs
+        return obj
 
 
 cdef class SimplifiedGeometrySink(COMObject):
@@ -803,7 +812,7 @@ cdef class DWriteFactory(COMObject):
             <IUnknown**>&factory)
         if FAILED(res):
             raise DirectWriteError(res)
-        COMObject.__init__(self, <int><intptr_t>factory)
+        self.ptr = <void*>factory
 
     def CreateTextFormat(self, str familyName, float size, int weight=500, int style=0, int stretch=5):
         cdef IDWriteTextFormat *fmt
@@ -825,7 +834,9 @@ cdef class DWriteFactory(COMObject):
         PyMem_Free(<void*>familyBuf)
         if FAILED(res):
             raise DirectWriteError(res)
-        return TextFormat(<int><intptr_t>fmt)
+        cdef TextFormat obj = TextFormat.__new__(TextFormat)
+        obj.ptr = <void*>fmt
+        return obj
 
     def CreateTextLayout(self, str text, TextFormat textFormat, float maxWidth, float maxHeight):
         cdef IDWriteTextLayout* layout
@@ -844,7 +855,9 @@ cdef class DWriteFactory(COMObject):
         PyMem_Free(stringBuf)
         if FAILED(res):
             raise DirectWriteError(res)
-        return TextLayout(<int><intptr_t>layout)
+        cdef TextLayout obj = TextLayout.__new__(TextLayout)
+        obj.ptr = <void*>layout
+        return obj
 
 
 cdef class FontFace(COMObject):
