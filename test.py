@@ -78,6 +78,25 @@ class TestD2DFactory(PyD2DTest):
         self.assertIsInstance(render_target, pyd2d.RenderTarget)
         destroy_test_window(hwnd)
 
+    def test_factory_create_hwnd_render_target_invalid_feature_level(self):
+        factory = pyd2d.GetD2DFactory()
+        hwnd = create_test_window()
+        with self.assertRaisesRegex(pyd2d.Direct2DError, "The parameter is incorrect."):
+            factory.CreateHwndRenderTarget(
+                hwnd=hwnd,
+                width=100,
+                height=100,
+                presentOptions=pyd2d.PRESENT_OPTIONS.NONE,
+                rtType=pyd2d.RENDER_TARGET_TYPE.DEFAULT,
+                pixelFormat=pyd2d.DXGI_FORMAT.UNKNOWN,
+                alphaMode=pyd2d.ALPHA_MODE.UNKNOWN,
+                dpiX=96,
+                dpiY=96,
+                usage=pyd2d.RENDER_TARGET_USAGE.NONE,
+                featureLevel=55555,
+            )
+        destroy_test_window(hwnd)
+
     def test_factory_create_path_geometry(self):
         factory = pyd2d.GetD2DFactory()
         geometry = factory.CreatePathGeometry()
