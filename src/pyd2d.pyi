@@ -181,6 +181,11 @@ class COMObject:
     Use the factory functions to create instances of COMObject subclasses.
     """
 
+    def Release(self) -> None:
+        """
+        Releases the COM object. The object can no longer be used after this call.
+        """
+
 def GetD2DFactory() -> "D2DFactory":
     """
     Returns the Direct2D factory object, creating it on the first call.

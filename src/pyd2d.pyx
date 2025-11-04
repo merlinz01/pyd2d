@@ -349,9 +349,14 @@ cdef class COMObject:
     def __init__(self, int ptr):
         self.ptr = <void*><intptr_t>ptr
 
+    def Release(self):
+        if self.ptr is not NULL:
+            (<IUnknown*>self.ptr).Release()
+            self.ptr = NULL
+
     def __del__(self):
         try:
-            (<IUnknown*>self.ptr).Release()
+            self.Release()
         except AttributeError:
             pass
 

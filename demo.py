@@ -91,12 +91,14 @@ class PyD2DDemoWindow:
         self.render_target = factory.CreateHwndRenderTarget(
             int(self.hwnd), self.width, self.height
         )
+        factory.Release()
         self.line_brush = self.render_target.CreateSolidColorBrush(1.0, 0.5, 0.5)
         self.text_brush = self.render_target.CreateSolidColorBrush(1.0, 1.0, 1.0, 0.5)
         if not user32.SetTimer(self.hwnd, 123, 10, None):
             raise OSError(ctypes.FormatError())
         dwritefactory = pyd2d.GetDWriteFactory()
         self.text_format = dwritefactory.CreateTextFormat("Segoe UI", 12)
+        dwritefactory.Release()
         self.mouse_is_down = False
         self.balls = []  # type: list[Ball]
         for _ in range(10):
@@ -115,6 +117,11 @@ class PyD2DDemoWindow:
 
     def destroy(self):
         user32.KillTimer(self.hwnd, 123)
+        for ball in self.balls:
+            ball.brush.Release()
+        self.text_brush.Release()
+        self.line_brush.Release()
+        self.render_target.Release()
         pyd2d.UninitializeCOM()
 
     def resize(self):
