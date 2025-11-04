@@ -37,17 +37,17 @@ cdef extern from "windows.h":
         unsigned long dwLanguageId,
         wchar_t* lpBuffer,
         unsigned long nSize,
-        void *Arguments)
-    bint SUCCEEDED(HRESULT hr)
-    bint FAILED(HRESULT hr)
+        void *Arguments) noexcept nogil
+    bint SUCCEEDED(HRESULT hr) noexcept nogil
+    bint FAILED(HRESULT hr) noexcept nogil
 
 cdef extern from "objbase.h":
     HRESULT CoInitializeEx(
         void* pvReserved,
-        unsigned long dwCoInit)
+        unsigned long dwCoInit) noexcept nogil
 
     cdef cppclass IUnknown:
-        void Release()
+        void Release() noexcept nogil
 
 cdef extern from "dwrite.h":
     """
@@ -72,8 +72,8 @@ cdef extern from "dwrite.h":
     cdef GUID IID_IDWriteFactory
 
     cdef cppclass IDWriteTextLayout:
-        FLOAT GetMaxWidth()
-        HRESULT GetMetrics(DWRITE_TEXT_METRICS *textMetrics)
+        FLOAT GetMaxWidth() noexcept nogil
+        HRESULT GetMetrics(DWRITE_TEXT_METRICS *textMetrics) noexcept nogil
     cdef cppclass IDWriteFactory:
         HRESULT CreateTextFormat(
             const WCHAR *family_name,
@@ -83,19 +83,20 @@ cdef extern from "dwrite.h":
             DWRITE_FONT_STRETCH stretch,
             FLOAT size,
             const WCHAR *locale,
-            IDWriteTextFormat **format)
+            IDWriteTextFormat **format) noexcept nogil
         HRESULT CreateTextLayout(
             WCHAR *string,
             UINT32 stringLength,
             IDWriteTextFormat *textFormat,
             FLOAT maxWidth,
             FLOAT maxHeight,
-            IDWriteTextLayout **textLayout
-        )
+            IDWriteTextLayout **textLayout) noexcept nogil
     cdef cppclass IDWriteFontCollection
     cdef cppclass IDWriteTextFormat
 
-    HRESULT DWriteCreateFactory(DWRITE_FACTORY_TYPE factoryType, const GUID& iid, IUnknown** factory)
+    HRESULT DWriteCreateFactory(
+        DWRITE_FACTORY_TYPE factoryType,
+        const GUID& iid, IUnknown** factory) noexcept nogil
 
 
 cdef extern from "d2d1.h":
@@ -199,71 +200,71 @@ cdef extern from "d2d1.h":
 
     cdef cppclass ID2D1Bitmap
     cdef cppclass ID2D1Brush:
-        FLOAT GetOpacity()
+        FLOAT GetOpacity() noexcept nogil
     cdef cppclass ID2D1PathGeometry:
-        HRESULT Open(ID2D1GeometrySink **geometrySink)
+        HRESULT Open(ID2D1GeometrySink **geometrySink) noexcept nogil
     cdef cppclass ID2D1StrokeStyle
     cdef cppclass ID2D1Factory:
         HRESULT CreateHwndRenderTarget(
             const D2D1_RENDER_TARGET_PROPERTIES *renderTargetProperties,
             const D2D1_HWND_RENDER_TARGET_PROPERTIES *hwndRenderTargetProperties,
-            ID2D1HwndRenderTarget **hwndRenderTarget)
-        HRESULT CreatePathGeometry(ID2D1PathGeometry **pathGeometry)
+            ID2D1HwndRenderTarget **hwndRenderTarget) noexcept nogil
+        HRESULT CreatePathGeometry(ID2D1PathGeometry **pathGeometry) noexcept nogil
         HRESULT CreateStrokeStyle(
             const D2D1_STROKE_STYLE_PROPERTIES *strokeStyleProperties,
             const FLOAT *dashes,
             UINT dashesCount,
-            ID2D1StrokeStyle **strokeStyle)
+            ID2D1StrokeStyle **strokeStyle) noexcept nogil
     cdef cppclass ID2D1Geometry
     cdef cppclass ID2D1GeometrySink:
-        void AddArc(const D2D1_ARC_SEGMENT *arc)
-        void AddBezier(const D2D1_BEZIER_SEGMENT *bezier)
-        void AddLine(D2D1_POINT_2F point)
-        void AddQuadraticBezier(const D2D1_QUADRATIC_BEZIER_SEGMENT *bezier)
-        void BeginFigure(D2D1_POINT_2F startPoint, D2D1_FIGURE_BEGIN figureBegin)
-        HRESULT Close()
-        void EndFigure(D2D1_FIGURE_END figureEnd)
-        void SetFillMode(D2D1_FILL_MODE fillMode)
+        void AddArc(const D2D1_ARC_SEGMENT *arc) noexcept nogil
+        void AddBezier(const D2D1_BEZIER_SEGMENT *bezier) noexcept nogil
+        void AddLine(D2D1_POINT_2F point) noexcept nogil
+        void AddQuadraticBezier(const D2D1_QUADRATIC_BEZIER_SEGMENT *bezier) noexcept nogil
+        void BeginFigure(D2D1_POINT_2F startPoint, D2D1_FIGURE_BEGIN figureBegin) noexcept nogil
+        HRESULT Close() noexcept nogil
+        void EndFigure(D2D1_FIGURE_END figureEnd) noexcept nogil
+        void SetFillMode(D2D1_FILL_MODE fillMode) noexcept nogil
     cdef cppclass ID2D1HwndRenderTarget:
-        HRESULT Resize(const D2D1_SIZE_U *pixelSize)
+        HRESULT Resize(const D2D1_SIZE_U *pixelSize) noexcept nogil
     cdef cppclass ID2D1RenderTarget:
-        void BeginDraw()
-        void Clear(const D2D1_COLOR_F *clearColor)
+        void BeginDraw() noexcept nogil
+        void Clear(const D2D1_COLOR_F *clearColor) noexcept nogil
         HRESULT CreateBitmapFromWicBitmap(
             IWICBitmapSource *wicBitmapSource,
             const D2D1_BITMAP_PROPERTIES *bitmapProperties,
-            ID2D1Bitmap **bitmap)
+            ID2D1Bitmap **bitmap) noexcept nogil
         HRESULT CreateSolidColorBrush(
             const D2D1_COLOR_F *color,
             const D2D1_BRUSH_PROPERTIES *brushProperties,
-            ID2D1SolidColorBrush **solidColorBrush)
+            ID2D1SolidColorBrush **solidColorBrush) noexcept nogil
         void DrawBitmap(
             ID2D1Bitmap *bitmap,
             const D2D1_RECT_F& destinationRectangle,
             FLOAT opacity,
             D2D1_BITMAP_INTERPOLATION_MODE interpolationMode,
-            const D2D1_RECT_F *sourceRectangle)
+            const D2D1_RECT_F *sourceRectangle) noexcept nogil
         void DrawEllipse(
             const D2D1_ELLIPSE *ellipse,
             ID2D1Brush *brush,
             FLOAT strokeWidth,
-            ID2D1StrokeStyle *strokeStyle)
+            ID2D1StrokeStyle *strokeStyle) noexcept nogil
         void DrawGeometry(
             ID2D1Geometry *geometry,
             ID2D1Brush *brush,
             FLOAT strokeWidth,
-            ID2D1StrokeStyle *strokeStyle)
+            ID2D1StrokeStyle *strokeStyle) noexcept nogil
         void DrawLine(
             D2D1_POINT_2F point0,
             D2D1_POINT_2F point1,
             ID2D1Brush *brush,
             FLOAT strokeWidth,
-            ID2D1StrokeStyle *strokeStyle)
+            ID2D1StrokeStyle *strokeStyle) noexcept nogil
         void DrawRectangle(
             const D2D1_RECT_F *rect,
             ID2D1Brush *brush,
             FLOAT strokeWidth,
-            ID2D1StrokeStyle *strokeStyle)
+            ID2D1StrokeStyle *strokeStyle) noexcept nogil
         void DrawTextW(
             const WCHAR *string,
             UINT stringLength,
@@ -271,29 +272,29 @@ cdef extern from "d2d1.h":
             const D2D1_RECT_F &layoutRect,
             ID2D1Brush *defaultForegroundBrush,
             D2D1_DRAW_TEXT_OPTIONS options,
-            DWRITE_MEASURING_MODE measuringMode)
+            DWRITE_MEASURING_MODE measuringMode) noexcept nogil
         void DrawTextLayout(
             D2D1_POINT_2F origin,
             IDWriteTextLayout *textLayout,
             ID2D1Brush *defaultForegroundBrush,
-            D2D1_DRAW_TEXT_OPTIONS options)
-        HRESULT EndDraw(D2D1_TAG *tag1, D2D1_TAG *tag2)
-        void FillEllipse(const D2D1_ELLIPSE *ellipse, ID2D1Brush *brush)
+            D2D1_DRAW_TEXT_OPTIONS options) noexcept nogil
+        HRESULT EndDraw(D2D1_TAG *tag1, D2D1_TAG *tag2) noexcept nogil
+        void FillEllipse(const D2D1_ELLIPSE *ellipse, ID2D1Brush *brush) noexcept nogil
         void FillGeometry(
             ID2D1Geometry *geometry,
             ID2D1Brush *brush,
-            ID2D1Brush *opacityBrush)
-        void FillRectangle(const D2D1_RECT_F *rect, ID2D1Brush *brush)
-        void GetTransform(D2D1_MATRIX_3X2_F *transform)
-        void SetAntialiasMode(D2D1_ANTIALIAS_MODE antialiasMode)
-        void SetTransform(const D2D1_MATRIX_3X2_F *transform)
+            ID2D1Brush *opacityBrush) noexcept nogil
+        void FillRectangle(const D2D1_RECT_F *rect, ID2D1Brush *brush) noexcept nogil
+        void GetTransform(D2D1_MATRIX_3X2_F *transform) noexcept nogil
+        void SetAntialiasMode(D2D1_ANTIALIAS_MODE antialiasMode) noexcept nogil
+        void SetTransform(const D2D1_MATRIX_3X2_F *transform) noexcept nogil
     cdef cppclass ID2D1SimplifiedGeometrySink:
-        void BeginFigure(D2D1_POINT_2F startPoint, int figureBegin)
-        HRESULT Close()
-        void EndFigure(int figureEnd)
-        void SetFillMode(D2D1_FILL_MODE fillMode)
+        void BeginFigure(D2D1_POINT_2F startPoint, int figureBegin) noexcept nogil
+        HRESULT Close() noexcept nogil
+        void EndFigure(int figureEnd) noexcept nogil
+        void SetFillMode(D2D1_FILL_MODE fillMode) noexcept nogil
     cdef cppclass ID2D1SolidColorBrush:
-        void SetColor(const D2D1_COLOR_F *color)
+        void SetColor(const D2D1_COLOR_F *color) noexcept nogil
     cdef cppclass IWICBitmapSource
 
     cdef const GUID IID_ID2D1Factory
@@ -302,7 +303,7 @@ cdef extern from "d2d1.h":
         D2D1_FACTORY_TYPE factoryType,
         const GUID& riid,
         const D2D1_FACTORY_OPTIONS *pFactoryOptions,
-        void **ppIFactory)
+        void **ppIFactory) noexcept nogil
 
 
 cdef getHRESULTstring(int hr):
