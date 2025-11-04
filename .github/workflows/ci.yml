@@ -38,5 +38,8 @@ jobs:
         run: uv build
       - name: Install the package
         run: uv pip install .
+      - name: Set PYTHON_GIL
+        run: echo "PYTHON_GIL=0" >> $env:GITHUB_ENV
+        if: ${{ endsWith(matrix.python-version, 't') }}
       - name: Test
         run: .venv/Scripts/pytest.exe test.py
